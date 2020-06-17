@@ -52,6 +52,7 @@ unsigned long int Ram(int pid);
 std::string Uid(int pid);
 std::string User(int pid);
 std::vector<unsigned long int> CpuUtilization(int pid);
+unsigned long int startTime(int pid);
 };  // namespace LinuxParser
 
 #endif

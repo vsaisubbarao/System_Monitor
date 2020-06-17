@@ -238,7 +238,15 @@ string LinuxParser::User(int pid) {
   }
 
 // Read and return the uptime of a process
-std::vector<unsigned long int> LinuxParser::CpuUtilization(int pid) { 
+std::vector<unsigned long int> LinuxParser::CpuUtilization(int pid) {
+  /*
+  Reads the /proc/meminfo file and returns a vector containing
+  [0] utime 
+  [1] stime
+  [2] cutime 
+  [3] cstime 
+  [4] starttime 
+  */  
   string line, value;
   int counter = 0;
   std::vector<unsigned long int> cpu_util;
@@ -254,4 +262,21 @@ std::vector<unsigned long int> LinuxParser::CpuUtilization(int pid) {
     }
   }
   return std::vector<unsigned long int>{}; 
+}
+
+unsigned long int LinuxParser::startTime(int pid){
+  string line, value;
+  int counter = 0;
+  std::ifstream stream(kProcDirectory + std::to_string(pid) + kStatusFilename);
+  if (stream.is_open()){
+    while(std::getline(stream, line)){
+      std::istringstream lstream(line);
+      counter++;
+      if (counter == 22){
+        lstream >> value;
+        return std::stoi(value);
+      }
+    }
   }
+  return 0; 
+}
