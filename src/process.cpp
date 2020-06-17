@@ -12,7 +12,7 @@ using std::to_string;
 using std::vector;
 
 // Return this process's ID
-int Process::Pid() { return pid_; }
+int Process::Pid() const { return pid_; }
 
 // Return this process's CPU utilization
 long Process::CpuUtilization() const { 
@@ -39,16 +39,16 @@ string Process::Command() {
 }
 
 // Return this process's memory utilization
-string Process::Ram() { 
+string Process::Ram() const { 
     unsigned long mem = (long) LinuxParser::Ram(pid_)/1024.0f;   
     return to_string(mem); 
 }
 
 // Return the user (name) that generated this process
-string Process::User() { return LinuxParser::User(pid_); }
+string Process::User() const { return LinuxParser::User(pid_); }
 
 // Return the age of this process (in seconds)
-long Process::UpTime() { 
+long Process::UpTime() const { 
     long sys_uptime = LinuxParser::UpTime();
     long proc_starttime = LinuxParser::startTime(pid_);
     long Hertz = sysconf(_SC_CLK_TCK);
