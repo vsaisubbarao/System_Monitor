@@ -238,19 +238,20 @@ string LinuxParser::User(int pid) {
   }
 
 // Read and return the uptime of a process
-unsigned long int LinuxParser::UpTime(int pid) { 
+std::vector<unsigned long int> LinuxParser::CpuUtilization(int pid) { 
   string line, value;
   int counter = 0;
+  std::vector<unsigned long int> cpu_util;
   std::ifstream stream(kProcDirectory + std::to_string(pid) + kStatusFilename);
   if (stream.is_open()){
     while(std::getline(stream, line)){
       std::istringstream lstream(line);
       counter++;
-      if (counter == 22){
+      if (counter == 14 || counter == 15 || counter == 16 || counter == 17 || counter == 22){
         lstream >> value;
-        return stoi(value);
+        cpu_util.push_back(std::stoi(value));
       }
     }
   }
-  return 0; 
+  return std::vector<unsigned long int>{}; 
   }
