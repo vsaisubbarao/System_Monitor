@@ -14,7 +14,12 @@ using std::size_t;
 using std::string;
 using std::vector;
 
-// TODO: Return the system's CPU
+// Constructor 
+System::System(){
+    os_ = LinuxParser::OperatingSystem();
+    kernel_ = LinuxParser::Kernel();
+}
+// Return the system's CPU
 Processor& System::Cpu() { return cpu_; }
 
 // Return a container composed of the system's processes
