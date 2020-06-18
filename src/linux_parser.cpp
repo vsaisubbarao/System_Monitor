@@ -2,6 +2,7 @@
 #include <unistd.h>
 #include <string>
 #include <vector>
+#include <iostream>
 
 #include "linux_parser.h"
 
@@ -96,7 +97,7 @@ long LinuxParser::UpTime() {
     std::getline(stream, line);
     std::istringstream lstream(line);
     lstream>>uptime;
-  }
+    }
   return std::stol(uptime); 
   }
 
@@ -151,7 +152,7 @@ unsigned int LinuxParser::TotalProcesses() {
       std::istringstream lstream(line);
       lstream >> key;
       if (key == "processes"){
-        stream >> value;
+        lstream >> value;
         break;
       }
     }
@@ -168,7 +169,7 @@ unsigned int LinuxParser::RunningProcesses() {
       std::istringstream lstream(line);
       lstream >> key;
       if (key == "procs_running"){
-        stream >> value;
+        lstream >> value;
         break;
       }
     }
@@ -250,30 +251,31 @@ std::vector<unsigned long int> LinuxParser::CpuUtilization(int pid) {
   string line, value;
   int counter = 0;
   std::vector<unsigned long int> cpu_util;
-  std::ifstream stream(kProcDirectory + std::to_string(pid) + kStatusFilename);
+  std::ifstream stream(kProcDirectory + std::to_string(pid) + kStatFilename);
   if (stream.is_open()){
-    while(std::getline(stream, line)){
-      std::istringstream lstream(line);
+    std::getline(stream, line);
+    std::istringstream lstream(line);
+    while(counter < 23){
       counter++;
+      lstream >> value;
       if (counter == 14 || counter == 15 || counter == 16 || counter == 17 || counter == 22){
-        lstream >> value;
         cpu_util.push_back(std::stoi(value));
       }
     }
   }
-  return std::vector<unsigned long int>{}; 
+  return cpu_util; 
 }
 
 unsigned long int LinuxParser::startTime(int pid){
   string line, value;
   int counter = 0;
-  std::ifstream stream(kProcDirectory + std::to_string(pid) + kStatusFilename);
+  std::ifstream stream(kProcDirectory + std::to_string(pid) + kStatFilename);
+  std::istringstream lstream(line);
   if (stream.is_open()){
     while(std::getline(stream, line)){
-      std::istringstream lstream(line);
       counter++;
+      lstream >> value;
       if (counter == 22){
-        lstream >> value;
         return std::stoi(value);
       }
     }
