@@ -26,7 +26,7 @@ long Process::CpuUtilization() const {
     total_time += proc_cpu_data[2] + proc_cpu_data[3];
     // Time elapsed since the start of the process
     long seconds = uptime - (proc_cpu_data[4]/Hertz);
-    return 100*(total_time/Hertz)/seconds ; 
+    return (long)(total_time/Hertz)/seconds ; 
 }
 
 // Return the command that generated this process

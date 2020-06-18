@@ -73,6 +73,8 @@ std::vector<unsigned long int> LinuxParser::MemoryUtilization() {
   Reads the /proc/meminfo file and returns a vector containing
   [0] total memory 
   [1] free memory 
+  [2] buffers 
+  [3] cached memory 
   */ 
   string line, key, value;
   std::vector<unsigned long int> meminfo;

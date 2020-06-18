@@ -22,5 +22,5 @@ float Processor::Utilization() {
     unsigned long int total_d = total - prev_total;
     unsigned long int idle_d = idle - prev_idle;
 
-    return 100 * (total_d - idle_d)/total_d; 
+    return (float)(total_d - idle_d)/total_d; 
 }

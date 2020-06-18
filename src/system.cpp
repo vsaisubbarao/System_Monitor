@@ -3,6 +3,7 @@
 #include <set>
 #include <string>
 #include <vector>
+#include <iostream>
 
 #include "process.h"
 #include "processor.h"
@@ -39,7 +40,7 @@ std::string System::Kernel() { return kernel_; }
 // Return the system's memory utilization in percentage
 float System::MemoryUtilization() { 
     std::vector<unsigned long int> meminfo = LinuxParser::MemoryUtilization();
-    return 100*(meminfo[0] - meminfo[1])/meminfo[0]; 
+    return (float)(meminfo[0] - meminfo[1])/meminfo[0]; 
 }
 
 // Return the operating system name
