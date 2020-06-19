@@ -4,6 +4,7 @@
 #include <string>
 #include <vector>
 #include <iostream>
+#include <math.h>
 
 #include "process.h"
 #include "linux_parser.h"
@@ -22,7 +23,7 @@ float Process::CpuUtilization() const {
     auto Hertz = sysconf(_SC_CLK_TCK);
     // Time spent on the root process itself
     unsigned long int total_time = proc_cpu_data[0] + proc_cpu_data[1];
-    // Time spent on the chilse operator overldren processes
+    // Time spent on the children processes
     total_time += proc_cpu_data[2] + proc_cpu_data[3];
     // Time elapsed since the start of the process
     double seconds = uptime - (proc_cpu_data[4]/Hertz);
@@ -40,9 +41,8 @@ string Process::Command() {
 }
 
 // Return this process's memory utilization
-string Process::Ram() const { 
-    unsigned long mem = (long) LinuxParser::Ram(pid_)/1024.0f;   
-    return to_string(mem); 
+std::string Process::Ram() const { 
+    return std::to_string(LinuxParser::Ram(pid_)/1024.0f);    
 }
 
 // Return the user (name) that generated this process
@@ -58,5 +58,10 @@ double Process::UpTime() {
 
 // Overload the "less than" comparison operator for Process objects
 bool Process::operator<(Process const& a) const {
-    return (a.CpuUtilization() < CpuUtilization());
+    // if (LinuxParser::sort_order == 'c') {
+        // return (a.CpuUtilization() < CpuUtilization());
+        // }
+    // else if (LinuxParser::sort_order == 'm'){
+        return (a.Ram() < Ram());
+    // }
 }
