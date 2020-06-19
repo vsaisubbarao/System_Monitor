@@ -243,7 +243,7 @@ std::vector<unsigned long int> LinuxParser::CpuUtilization(int pid) {
   if (stream.is_open()){
     std::getline(stream, line);
     std::istringstream lstream(line);
-    while(counter < 23){
+    while(counter < 22){
       counter++;
       lstream >> value;
       if (counter == 14 || counter == 15 || counter == 16 || counter == 17 || counter == 22){
@@ -258,9 +258,10 @@ unsigned long int LinuxParser::startTime(int pid){
   string line, value;
   int counter = 0;
   std::ifstream stream(kProcDirectory + std::to_string(pid) + kStatFilename);
+  std::getline(stream, line);
   std::istringstream lstream(line);
   if (stream.is_open()){
-    while(std::getline(stream, line)){
+    while(counter < 22){
       counter++;
       lstream >> value;
       if (counter == 22){

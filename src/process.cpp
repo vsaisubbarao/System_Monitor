@@ -49,11 +49,11 @@ string Process::Ram() const {
 string Process::User() const { return LinuxParser::User(pid_); }
 
 // Return the age of this process (in seconds)
-long Process::UpTime() const { 
-    long sys_uptime = LinuxParser::UpTime();
+double Process::UpTime() { 
+    double sys_uptime = LinuxParser::UpTime();
     long proc_starttime = LinuxParser::startTime(pid_);
     long Hertz = sysconf(_SC_CLK_TCK);
-    return sys_uptime - (proc_starttime/Hertz); 
+    return (double)(sys_uptime - (proc_starttime/Hertz)); 
 }
 
 // Overload the "less than" comparison operator for Process objects
