@@ -73,8 +73,6 @@ std::vector<unsigned long int> LinuxParser::MemoryUtilization() {
   Reads the /proc/meminfo file and returns a vector containing
   [0] total memory 
   [1] free memory 
-  [2] buffers 
-  [3] cached memory 
   */ 
   string line, key, value;
   std::vector<unsigned long int> meminfo;
@@ -84,7 +82,8 @@ std::vector<unsigned long int> LinuxParser::MemoryUtilization() {
     while(std::getline(stream, line)  && counter <2){
       std::istringstream lstream(line);
       lstream>>key>>value;
-      meminfo.push_back(std::stoi(value));
+      if (counter != 2)
+        meminfo.push_back(std::stoi(value));
       counter++;      
     }
   }
@@ -102,19 +101,6 @@ long LinuxParser::UpTime() {
     }
   return std::stol(uptime); 
   }
-
-// TODO: Read and return the number of jiffies for the system
-long LinuxParser::Jiffies() { return 0; }
-
-// TODO: Read and return the number of active jiffies for a PID
-// REMOVE: [[maybe_unused]] once you define the function
-long LinuxParser::ActiveJiffies(int pid[[maybe_unused]]) { return 0; }
-
-// TODO: Read and return the number of active jiffies for the system
-long LinuxParser::ActiveJiffies() { return 0; }
-
-// TODO: Read and return the number of idle jiffies for the system
-long LinuxParser::IdleJiffies() { return 0; }
 
 // TODO: Modify for individual core utilization
 vector<unsigned long int> LinuxParser::CpuUtilization() {

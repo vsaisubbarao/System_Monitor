@@ -9,18 +9,34 @@
 
 // Return the aggregate CPU utilization
 float Processor::Utilization() { 
-    std::vector<unsigned long int> prev_cpu_util = LinuxParser::CpuUtilization();
-    usleep(SLEEP_TIME);
     std::vector<unsigned long int> cpu_util = LinuxParser::CpuUtilization();
-    
-    unsigned long int prev_idle = prev_cpu_util[3] + prev_cpu_util[4];
-    unsigned long int idle = cpu_util[3] + cpu_util[4];
-    
-    unsigned long int prev_total = std::accumulate(prev_cpu_util.begin(), prev_cpu_util.end()-2, 0);
-    unsigned long int total = std::accumulate(cpu_util.begin(), cpu_util.end()-2, 0);
 
-    unsigned long int total_d = total - prev_total;
-    unsigned long int idle_d = idle - prev_idle;
+    if (prev_cpu_util.size() == 0){
+        prev_cpu_util = cpu_util;
+        prev_idle_ = idle_calc(prev_cpu_util);
+        prev_total_ = total_calc(prev_cpu_util);
+
+        return (float)(prev_total_ - prev_idle_)/prev_total_;
+    }
+
+    unsigned long int idle = idle_calc(cpu_util);
+    
+    unsigned long int total = total_calc(cpu_util);
+
+    unsigned long int total_d = total - prev_total_;
+    unsigned long int idle_d = idle - prev_idle_;
+
+    prev_cpu_util = cpu_util;
+    prev_idle_ = idle;
+    prev_total_ = total;
 
     return (float)(total_d - idle_d)/total_d; 
+}
+
+unsigned long int Processor::idle_calc(std::vector<unsigned long int> v) const{
+    return v[LinuxParser::CPUStates::kIdle_] + v[LinuxParser::CPUStates::kIOwait_];
+}
+
+unsigned long int Processor::total_calc(std::vector<unsigned long int> v) const{
+    return std::accumulate(v.begin(), v.end()-2, 0);
 }
