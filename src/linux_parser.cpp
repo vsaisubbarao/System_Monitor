@@ -91,7 +91,7 @@ std::vector<unsigned long int> LinuxParser::MemoryUtilization() {
   }
 
 // Read and return the system uptime
-long LinuxParser::UpTime() { 
+double LinuxParser::UpTime() { 
   string line, uptime;
   std::ifstream stream(kProcDirectory + kUptimeFilename);
   if(stream.is_open()){
@@ -99,7 +99,7 @@ long LinuxParser::UpTime() {
     std::istringstream lstream(line);
     lstream>>uptime;
     }
-  return std::stol(uptime); 
+  return std::stod(uptime); 
   }
 
 // TODO: Modify for individual core utilization

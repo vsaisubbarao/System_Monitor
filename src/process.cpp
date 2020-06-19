@@ -16,17 +16,17 @@ using std::vector;
 int Process::Pid() const { return pid_; }
 
 // Return this process's CPU utilization
-long Process::CpuUtilization() const { 
+float Process::CpuUtilization() const { 
     std::vector<unsigned long int> proc_cpu_data = LinuxParser::CpuUtilization(pid_);
-    long uptime = LinuxParser::UpTime();
+    double uptime = LinuxParser::UpTime();
     auto Hertz = sysconf(_SC_CLK_TCK);
     // Time spent on the root process itself
-    long total_time = proc_cpu_data[0] + proc_cpu_data[1];
-    // Time spent on the children processes
+    unsigned long int total_time = proc_cpu_data[0] + proc_cpu_data[1];
+    // Time spent on the chilse operator overldren processes
     total_time += proc_cpu_data[2] + proc_cpu_data[3];
     // Time elapsed since the start of the process
-    long seconds = uptime - (proc_cpu_data[4]/Hertz);
-    return (long)(total_time/Hertz)/seconds ; 
+    double seconds = uptime - (proc_cpu_data[4]/Hertz);
+    return (float)(total_time/Hertz)/seconds ; 
 }
 
 // Return the command that generated this process
