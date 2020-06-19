@@ -11,6 +11,8 @@ using std::string;
 using std::to_string;
 using std::vector;
 
+char LinuxParser::sort_order = 'm';
+
 // DONE: An example of how to read data from the filesystem
 string LinuxParser::OperatingSystem() {
   string line;

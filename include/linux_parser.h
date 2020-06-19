@@ -54,6 +54,7 @@ std::string Uid(int pid);
 std::string User(int pid);
 std::vector<unsigned long int> CpuUtilization(int pid);
 unsigned long int startTime(int pid);
+extern char sort_order; 
 };  // namespace LinuxParser
 
 #endif
