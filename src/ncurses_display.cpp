@@ -73,15 +73,15 @@ void NCursesDisplay::DisplayProcesses(std::vector<Process>& processes,
   mvwprintw(window, row, command_column, "COMMAND");
   wattroff(window, COLOR_PAIR(2));
   for (int i = 0; i < n; ++i) {
-    mvwprintw(window, ++row, pid_column, to_string(processes[i].Pid()).c_str());
-    mvwprintw(window, row, user_column, processes[i].User().c_str());
+    mvwprintw(window, ++row, pid_column, Format::pid(processes[i].Pid()).c_str());
+    mvwprintw(window, row, user_column, Format::user(processes[i].User()).c_str());
     float cpu = processes[i].CpuUtilization() * 100;
-    mvwprintw(window, row, cpu_column, to_string(cpu).substr(0, 4).c_str());
-    mvwprintw(window, row, ram_column, std::to_string(processes[i].Ram()).c_str());
+    mvwprintw(window, row, cpu_column, Format::cpu(cpu).substr(0, 4).c_str());
+    mvwprintw(window, row, ram_column, Format::ram(processes[i].Ram()).c_str());
     mvwprintw(window, row, time_column,
               Format::ElapsedTime(processes[i].UpTime()).c_str());
     mvwprintw(window, row, command_column,
-              processes[i].Command().substr(0, window->_maxx - 46).c_str());
+              Format::command(processes[i].Command()).substr(0, window->_maxx - 46).c_str());
   }
 }
 
@@ -112,13 +112,12 @@ void NCursesDisplay::Display(System& system, int n) {
     if((ch = getch())){
       if(ch == 'c') { LinuxParser::sort_order = 'c'; }
       else if(ch == 'm') { LinuxParser::sort_order = 'm'; }
-      else if (ch == 'q') { LinuxParser::sort_order = 'q'; }
+      else if (ch == 'q') { break; }
     }
     init_pair(1, COLOR_BLUE, COLOR_BLACK);
     init_pair(2, COLOR_GREEN, COLOR_BLACK);
     box(system_window, 0, 0);
     box(process_window, 0, 0);
-    // box(menu_window, 0, 0);
     DisplaySystem(system, system_window);
     DisplayProcesses(system.Processes(), process_window, n);
     DisplayMenu(menu_window);
