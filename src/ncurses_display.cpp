@@ -8,6 +8,7 @@
 #include "format.h"
 #include "ncurses_display.h"
 #include "system.h"
+#include "linux_parser.h"
 
 using std::string;
 using std::to_string;
@@ -84,6 +85,16 @@ void NCursesDisplay::DisplayProcesses(std::vector<Process>& processes,
   }
 }
 
+void NCursesDisplay::DisplayMenu(WINDOW* window){
+  int row{0};
+  int const c_sort_column{2};
+  int const m_sort_column{22};
+  int const quit_column{39};
+  mvwprintw(window, ++row, c_sort_column, "c:Sort by CPU[%]");
+  mvwprintw(window, row, m_sort_column, "m:Sort by RAM");
+  mvwprintw(window, row, quit_column, "q:Quit");
+}
+
 void NCursesDisplay::Display(System& system, int n) {
   initscr();      // start ncurses
   noecho();       // do not print input values
@@ -91,20 +102,29 @@ void NCursesDisplay::Display(System& system, int n) {
   start_color();  // enable color
 
   int x_max{getmaxx(stdscr)};
+  int y_max{getmaxy(stdscr)};
+  char ch;
   WINDOW* system_window = newwin(9, x_max - 1, 0, 0);
   WINDOW* process_window =
       newwin(3 + n, x_max - 1, system_window->_maxy + 1, 0);
-
+  WINDOW* menu_window = newwin(2, x_max - 1, y_max - 2, 0);
   while (1) {
     init_pair(1, COLOR_BLUE, COLOR_BLACK);
     init_pair(2, COLOR_GREEN, COLOR_BLACK);
     box(system_window, 0, 0);
     box(process_window, 0, 0);
+    // box(menu_window, 0, 0);
     DisplaySystem(system, system_window);
     DisplayProcesses(system.Processes(), process_window, n);
+    DisplayMenu(menu_window);
     wrefresh(system_window);
     wrefresh(process_window);
+    wrefresh(menu_window);
     refresh();
+    ch = wgetch(menu_window);
+    if (ch == 'c') { LinuxParser::sort_order = 'c'; }
+    else if (ch == 'm') { LinuxParser::sort_order = 'm'; }
+    else if (ch == 'q') { break; }
     std::this_thread::sleep_for(std::chrono::seconds(1));
   }
   endwin();
