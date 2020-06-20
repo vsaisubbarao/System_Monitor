@@ -33,10 +33,12 @@ float Processor::Utilization() {
     return (float)(total_d - idle_d)/total_d; 
 }
 
+// Return the total idle time of the cpu 
 unsigned long int Processor::idle_calc(std::vector<unsigned long int> v) const{
     return v[LinuxParser::CPUStates::kIdle_] + v[LinuxParser::CPUStates::kIOwait_];
 }
 
+// Return the total time of the cpu was running 
 unsigned long int Processor::total_calc(std::vector<unsigned long int> v) const{
     return std::accumulate(v.begin(), v.end()-2, 0);
 }

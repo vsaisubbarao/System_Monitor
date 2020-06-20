@@ -13,7 +13,7 @@ using std::vector;
 
 char LinuxParser::sort_order = 'm';
 
-// DONE: An example of how to read data from the filesystem
+// Read data from the filesystem
 string LinuxParser::OperatingSystem() {
   string line;
   string key;
@@ -36,7 +36,7 @@ string LinuxParser::OperatingSystem() {
   return value;
 }
 
-// DONE: An example of how to read data from the filesystem
+// Read data from the filesystem
 string LinuxParser::Kernel() {
   string os, kernel;
   string line;
@@ -256,6 +256,7 @@ std::vector<unsigned long int> LinuxParser::CpuUtilization(int pid) {
   return cpu_util; 
 }
 
+// Read and return the starting time of a process 
 unsigned long int LinuxParser::startTime(int pid){
   string line, value;
   int counter = 0;

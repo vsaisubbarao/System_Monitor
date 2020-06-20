@@ -36,7 +36,6 @@ string Process::Command() { return LinuxParser::Command(pid_); }
 // Return this process's memory utilization
 long int Process::Ram() const {
     return LinuxParser::Ram(pid_)/1024.0;
-    // return std::ceil(memutil*100.0)/100.0;    
 }
 
 // Return the user (name) that generated this process
@@ -53,9 +52,11 @@ double Process::UpTime() {
 // Overload the "less than" comparison operator for Process objects
 bool Process::operator<(Process const& a) const {
     if (LinuxParser::sort_order == 'c') {
+        // comparison based on cpu utilization percentage 
         return (a.CpuUtilization() < CpuUtilization());
         }
     else if (LinuxParser::sort_order == 'm'){
+        // comparison based on ram utilization
         return (a.Ram() < Ram());
     }
 }
