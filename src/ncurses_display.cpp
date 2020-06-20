@@ -98,7 +98,7 @@ void NCursesDisplay::DisplayMenu(WINDOW* window){
 void NCursesDisplay::Display(System& system, int n) {
   initscr();      // start ncurses
   noecho();       // do not print input values
-  cbreak();       // terminate ncurses on ctrl + c
+  nodelay(stdscr, true);       // terminate ncurses on ctrl + c
   start_color();  // enable color
 
   int x_max{getmaxx(stdscr)};
@@ -109,6 +109,11 @@ void NCursesDisplay::Display(System& system, int n) {
       newwin(3 + n, x_max - 1, system_window->_maxy + 1, 0);
   WINDOW* menu_window = newwin(2, x_max - 1, y_max - 2, 0);
   while (1) {
+    if((ch = getch())){
+      if(ch == 'c') { LinuxParser::sort_order = 'c'; }
+      else if(ch == 'm') { LinuxParser::sort_order = 'm'; }
+      else if (ch == 'q') { LinuxParser::sort_order = 'q'; }
+    }
     init_pair(1, COLOR_BLUE, COLOR_BLACK);
     init_pair(2, COLOR_GREEN, COLOR_BLACK);
     box(system_window, 0, 0);
@@ -121,10 +126,6 @@ void NCursesDisplay::Display(System& system, int n) {
     wrefresh(process_window);
     wrefresh(menu_window);
     refresh();
-    ch = wgetch(menu_window);
-    if (ch == 'c') { LinuxParser::sort_order = 'c'; }
-    else if (ch == 'm') { LinuxParser::sort_order = 'm'; }
-    else if (ch == 'q') { break; }
     std::this_thread::sleep_for(std::chrono::seconds(1));
   }
   endwin();
